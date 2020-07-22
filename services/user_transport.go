@@ -6,14 +6,17 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+
+	mymux "github.com/gorilla/mux"
 )
 
 func DecodeUserRequest(c context.Context, r *http.Request) (interface{}, error) {
-	// http://localhost:xxx/?uid=101
-	if r.URL.Query().Get("uid") != "" {
-		uid, _ := strconv.Atoi(r.URL.Query().Get("uid"))
+	vars := mymux.Vars(r)
+	if uid, ok := vars["uid"]; ok {
+		uid, _ := strconv.Atoi(uid)
 		return UserRequest{
-			UID: uid,
+			UID:    uid,
+			Method: r.Method,
 		}, nil
 	}
 
