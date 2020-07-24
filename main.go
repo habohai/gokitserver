@@ -13,6 +13,7 @@ import (
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	mymux "github.com/gorilla/mux"
+	"golang.org/x/time/rate"
 
 	"gomicro/util"
 )
@@ -34,7 +35,8 @@ func main() {
 	util.SetServiceNameAndPort(*name, *port)
 
 	user := services.UserService{}
-	endp := services.GetUserEndpoint(&user)
+	limiter := rate.NewLimiter(1, 5)
+	endp := services.RateLimit(limiter)(services.GetUserEndpoint(&user))
 
 	serverHandler := httptransport.NewServer(endp, services.DecodeUserRequest, services.EncodeUserResponse)
 

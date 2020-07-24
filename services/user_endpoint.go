@@ -4,9 +4,13 @@ import (
 	"context"
 	"fmt"
 	"gomicro/util"
+	"net/http"
 	"strconv"
 
 	"github.com/go-kit/kit/endpoint"
+	"golang.org/x/time/rate"
+
+	"github.com/hashicorp/vic/lib/apiservers/service/restapi/handlers/errors"
 )
 
 type UserRequest struct {
@@ -16,6 +20,18 @@ type UserRequest struct {
 
 type UserResponse struct {
 	Result string `json:"result"`
+}
+
+// RateLimit 加入限流功能的 中间件
+func RateLimit(limiter *rate.Limiter) endpoint.Middleware {
+	return func(next endpoint.Endpoint) endpoint.Endpoint {
+		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+			if limiter.Allow() {
+				return nil, errors.NewError(http.StatusTooManyRequests, "too many requests")
+			}
+			return next(ctx, request)
+		}
+	}
 }
 
 func GetUserEndpoint(userService IUserService) endpoint.Endpoint {
