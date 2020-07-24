@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 	"fmt"
+	"gomicro/util"
+	"strconv"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -21,7 +23,7 @@ func GetUserEndpoint(userService IUserService) endpoint.Endpoint {
 		r := request.(UserRequest)
 		result := "nothing"
 		if r.Method == "GET" {
-			result = userService.GetName(r.UID)
+			result = userService.GetName(r.UID) + strconv.Itoa(util.ServicePort)
 		} else if r.Method == "DELETE" {
 			if err := userService.DelUser(r.UID); err != nil {
 				result = err.Error()

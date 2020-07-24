@@ -1,12 +1,14 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"gomicro/services"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	httptransport "github.com/go-kit/kit/transport/http"
@@ -16,6 +18,21 @@ import (
 )
 
 func main() {
+
+	name := flag.String("name", "", "服务名称")
+	port := flag.Int("p", 0, "服务端口")
+
+	flag.Parse()
+
+	if *name == "" {
+		log.Fatal("请指定服务名称")
+	}
+	if *port == 0 {
+		log.Fatal("请指定服务端口号")
+	}
+
+	util.SetServiceNameAndPort(*name, *port)
+
 	user := services.UserService{}
 	endp := services.GetUserEndpoint(&user)
 
@@ -35,7 +52,7 @@ func main() {
 
 	go func() {
 		util.RegisterService()
-		err := http.ListenAndServe(":9050", r)
+		err := http.ListenAndServe(":"+strconv.Itoa(util.ServicePort), r)
 		if err != nil {
 			log.Println(err)
 			errChan <- err
