@@ -38,7 +38,11 @@ func main() {
 	limiter := rate.NewLimiter(1, 5)
 	endp := services.RateLimit(limiter)(services.GetUserEndpoint(&user))
 
-	serverHandler := httptransport.NewServer(endp, services.DecodeUserRequest, services.EncodeUserResponse)
+	options := []httptransport.ServerOption{
+		httptransport.ServerErrorEncoder(services.MyErrorEncoder),
+	}
+
+	serverHandler := httptransport.NewServer(endp, services.DecodeUserRequest, services.EncodeUserResponse, options...)
 
 	r := mymux.NewRouter()
 	// r.Handle(`/user/{uid:\d+}`, serverHandler)

@@ -9,8 +9,6 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	"golang.org/x/time/rate"
-
-	"github.com/hashicorp/vic/lib/apiservers/service/restapi/handlers/errors"
 )
 
 type UserRequest struct {
@@ -26,8 +24,8 @@ type UserResponse struct {
 func RateLimit(limiter *rate.Limiter) endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-			if limiter.Allow() {
-				return nil, errors.NewError(http.StatusTooManyRequests, "too many requests")
+			if !limiter.Allow() {
+				return nil, util.NewMyError(http.StatusTooManyRequests, "too many requests")
 			}
 			return next(ctx, request)
 		}
