@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gomicro/services"
 	"log"
 	"net/http"
 	"os"
@@ -11,13 +10,15 @@ import (
 	"strconv"
 	"syscall"
 
+	"github.com/haibeihabo/gokitserver/services"
+
 	kitlog "github.com/go-kit/kit/log"
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	mymux "github.com/gorilla/mux"
 	"golang.org/x/time/rate"
 
-	"gomicro/util"
+	"github.com/haibeihabo/gokitserver/util"
 )
 
 func main() {

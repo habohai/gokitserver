@@ -1,4 +1,4 @@
-module gomicro
+module github.com/haibeihabo/gokitserver
 
 go 1.14
 

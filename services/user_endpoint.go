@@ -3,9 +3,10 @@ package services
 import (
 	"context"
 	"fmt"
-	"gomicro/util"
 	"net/http"
 	"strconv"
+
+	"github.com/haibeihabo/gokitserver/util"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-kit/kit/endpoint"
