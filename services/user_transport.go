@@ -18,6 +18,7 @@ func DecodeUserRequest(c context.Context, r *http.Request) (interface{}, error) 
 		return UserRequest{
 			UID:    uid,
 			Method: r.Method,
+			Token:  r.URL.Query().Get("token"),
 		}, nil
 	}
 
